@@ -1,0 +1,40 @@
+{
+  "type": "module",
+  "name": "safe-surf-new",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EinsightOG/safe-surf-new.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EinsightOG/safe-surf-new/issues"
+  },
+  "homepage": "https://github.com/EinsightOG/safe-surf-new#readme",
+  "devDependencies": {
+    "@types/cheerio": "^0.22.31",
+    "@types/cors": "^2.8.12",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.13",
+    "@types/findandreplacedomtext": "^0.4.1",
+    "@types/node": "^17.0.24",
+    "@types/node-fetch": "^2.6.1"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "findandreplacedomtext": "^0.4.6",
+    "fs": "^0.0.1-security",
+    "node-fetch": "^3.2.3",
+    "perf_hooks": "^0.0.1",
+    "puppeteer-extra": "^3.2.3",
+    "puppeteer-extra-plugin-stealth": "^2.9.0"
+  }
+}
