@@ -1,3 +1,8 @@
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,12 +10,10 @@ body {
     sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: #121212;
+    color: white;
 }
 
-code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
 
 .navbar {
     /*style a nice navbar */
@@ -20,7 +23,6 @@ code {
     align-items: center;
     padding: 0 20px;
     color: white;
-    font-family: 'Roboto', sans-serif;
     font-weight: 300;
     font-size: 1.5rem;
     letter-spacing: 1px;
@@ -29,11 +31,25 @@ code {
     z-index: 1;
 }
 
+div .content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+div .submit-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
 div .li a {
     padding: 1rem;
 }
 
 a {
     text-decoration: none;
-    color: black;
+    color: white;
 }
