@@ -43,15 +43,6 @@ fs.readFile('server/dictionary/bad-words', function (err: ErrnoException | null,
 });
 
 
-function profanityReport(wordCount: number, profanityCount: number) {
-    console.log(process.env.SEP);
-    console.log(`Word Count: ${wordCount}`);
-    console.log(`Profanity Count: ${profanityCount}`);
-    console.log(`Profanity Makeup: ${Math.round(((profanityCount / wordCount) * 100) * 100) / 100}`);
-    console.log(process.env.SEP);
-}
-
-
 async function profanityData(link: string) {
     const browser = await puppeteer.launch({
         headless: false
@@ -99,7 +90,11 @@ async function profanityData(link: string) {
         profanityCount += (textContent.match(re)?.length) ?? 0
     }
 
-    profanityReport(wordCount, profanityCount)
+    return {
+        wordCount,
+        profanityCount,
+        profanityMakeup: Math.round(((profanityCount / wordCount) * 100) * 100) / 100
+    }
 }
 
 
@@ -107,11 +102,9 @@ app.post('/api/website-link', async function (req, res) {
     console.log(`Link: ${await req.body.link}`)
 
     const { link } = req.body
-    await profanityData(link)
+    const profanityReport = await profanityData(link)
 
-    res.send({
-        status: 'success'
-    })
+    res.send(profanityReport)
 
     console.log('Profanity processing completed')
 })
@@ -130,5 +123,5 @@ app.post('/api/profanity-download', async function (req, res) {
 })
 
 
-app.listen(process.env.PORT || 3000,
+app.listen(process.env.PORT || 3500,
     () => console.log(`Listening on port ${process.env.PORT || 3000}`))
