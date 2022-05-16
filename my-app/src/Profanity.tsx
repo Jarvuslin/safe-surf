@@ -1,7 +1,7 @@
 import {useState} from "react";
 
 
-const Create = () => {
+const Profanity = () => {
     // state
     const [link, setLink] = useState('');
     const [isPending, setIsPending] = useState(false);
@@ -44,6 +44,7 @@ const Create = () => {
 
             document.body.appendChild(a);
             a.click();
+            a.remove();
         } catch (error: any) {
             if (error.name === 'AbortError') {
                 console.log('Fetch aborted.');
@@ -60,7 +61,7 @@ const Create = () => {
         setIsPending(true);
 
         try {
-            const response = await fetch('http://localhost:5000/api/website-link', {
+            const response: Response = await fetch('http://localhost:5000/api/website-link', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({link})
@@ -124,4 +125,4 @@ const Create = () => {
 }
 
 
-export default Create;
+export default Profanity;
