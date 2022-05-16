@@ -2,11 +2,18 @@ import {useState} from "react";
 
 
 const Create = () => {
+    // state
     const [link, setLink] = useState('');
     const [isPending, setIsPending] = useState(false);
     const [infoRetrieved, setInfoRetrieved] = useState(false);
     const [error, setError] = useState(null)
 
+    // profanity data
+    const [profanityReport, setProfanityReport] = useState({
+        wordCount: null,
+        profanityCount: null,
+        profanityMakeup: null
+    });
 
     const handleDownload = async (html: boolean, img: boolean, e: { preventDefault: () => void; }) => {
         e.preventDefault();
@@ -53,7 +60,7 @@ const Create = () => {
         setIsPending(true);
 
         try {
-            await fetch('http://localhost:5000/api/website-link', {
+            const response = await fetch('http://localhost:5000/api/website-link', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({link})
@@ -61,6 +68,7 @@ const Create = () => {
 
             setIsPending(false);
             setInfoRetrieved(true);
+            setProfanityReport(await response.json());
             setError(null);
         } catch (error: any) {
             if (error.name === 'AbortError') {
@@ -74,7 +82,7 @@ const Create = () => {
 
     return (
         <div className="submit-form">
-            <h2>Profanity Filter</h2>
+            <h1>Search</h1>
             <form onSubmit={handleSubmit}>
                 <label>Link:</label>
                 <input
@@ -88,10 +96,27 @@ const Create = () => {
                 {error && <p>{error}</p>}
             </form>
             {infoRetrieved &&
-                <div className="profanity-data">
-                    <h1>Profanity Report</h1>
-                    <button onClick={(e) => handleDownload(true, false, e)}>HTML</button>
-                    <button onClick={(e) => handleDownload(false, true, e)}>IMAGE</button>
+                <div className="profanity">
+                    <div className="profanity-report">
+                        <ul>
+                            <li>
+                                <h2>Word Count</h2>
+                                <p>{profanityReport.wordCount}</p>
+                            </li>
+                            <li>
+                                <h2>Profanity Count</h2>
+                                <p>{profanityReport.profanityCount}</p>
+                            </li>
+                            <li>
+                                <h2>Profanity Percentage</h2>
+                                <p>{profanityReport.profanityMakeup}%</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="profanity-buttons">
+                        <button onClick={(e) => handleDownload(true, false, e)}>HTML</button>
+                        <button onClick={(e) => handleDownload(false, true, e)}>IMAGE</button>
+                    </div>
                 </div>
             }
         </div>
