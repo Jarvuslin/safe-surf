@@ -1,3 +1,8 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -11,12 +16,10 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: #121212;
-    color: white;
+    color: black;
 }
 
-
 .navbar {
-    /*style a nice navbar */
     height: 60px;
     display: flex;
     justify-content: space-between;
@@ -36,6 +39,39 @@ div .content {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+div .profanity-report {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+div .profanity-report ul li {
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+div .profanity-buttons {
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
 }
 
 div .submit-form {
@@ -43,6 +79,10 @@ div .submit-form {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+}
+
+div .submit-form form {
+    padding: 1rem;
 }
 
 div .li a {
