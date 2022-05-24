@@ -19,7 +19,7 @@ const Profanity = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:5000/api/profanity-download', {
+            const response = await fetch('http://localhost:3500/api/profanity-download', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -61,7 +61,7 @@ const Profanity = () => {
         setIsPending(true);
 
         try {
-            const response: Response = await fetch('http://localhost:5000/api/website-link', {
+            const response: Response = await fetch('http://localhost:3500/api/website-link', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({link})
