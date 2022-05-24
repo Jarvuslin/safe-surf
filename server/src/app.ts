@@ -25,7 +25,7 @@ const app = express()
 app.use(cors())
 
 // body parser setup
-app.use(bodyParser.urlencoded({ extended: false })) // parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({extended: false})) // parse application/x-www-form-urlencoded
 app.use(bodyParser.json()) // parse application/json
 
 
@@ -82,7 +82,7 @@ async function profanityData(link: string) {
     const textContent: string = data.trim().replace(/[\s]+/g, " ")
 
     let profanityCount: number = 0;
-    let wordCount:number = textContent.split(" ").length;
+    let wordCount: number = textContent.split(" ").length;
 
     for (let badWord of badWords) {
         let re = new RegExp(badWord, "gi");
@@ -97,11 +97,10 @@ async function profanityData(link: string) {
     }
 }
 
-
 app.post('/api/website-link', async function (req, res) {
     console.log(`Link: ${await req.body.link}`)
 
-    const { link } = req.body
+    const {link} = req.body
     const profanityReport = await profanityData(link)
 
     res.send(profanityReport)
@@ -109,11 +108,10 @@ app.post('/api/website-link', async function (req, res) {
     console.log('Profanity processing completed')
 })
 
-
 app.post('/api/profanity-download', async function (req, res) {
     let fileName: string
 
-    if (req.body.html){
+    if (req.body.html) {
         fileName = 'clone.mhtml'
     } else if (req.body.img) {
         fileName = 'screenshot.png'
@@ -122,6 +120,14 @@ app.post('/api/profanity-download', async function (req, res) {
     res.download(path.join(__dirname, '..', `/clones/${fileName!}`), 'clone.mhtml');
 })
 
+app.post('/api/contact-us', async function (req, res) {
+    const {email, message} = req.body
+
+    console.log(`email: ${email}, message: ${message}`)
+
+    return res.sendStatus(200).send()
+});
+
 
 app.listen(process.env.PORT || 3500,
-    () => console.log(`Listening on port ${process.env.PORT || 3000}`))
+    () => console.log(`Listening on port ${process.env.PORT || 3500}`))
