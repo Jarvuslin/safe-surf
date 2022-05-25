@@ -1,7 +1,24 @@
+import Typography from "@mui/material/Typography";
+import React from "react";
+
 const AboutUs = () => {
+    const useStyles = {
+        title: {
+            marginTop: '1rem',
+        }
+    };
+
     return (
         <div className="about-us">
-            <h1>About Us</h1>
+            <Typography
+                sx={useStyles.title}
+                variant='h6'
+                color='textPrimary'
+                align='center'
+                gutterBottom
+            >
+                ABOUT US
+            </Typography>
         </div>
     );
 }
