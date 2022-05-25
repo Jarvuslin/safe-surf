@@ -9,12 +9,25 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
 import PolicyIcon from '@mui/icons-material/Policy';
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
 
-const pages = ['Search', 'About Us', 'Contact Us'];
+const pages = ['SEARCH', 'ABOUT US', 'CONTACT US'];
 
-const Navbar = () => {
+const useStyles = {
+    menu: {
+        textDecoration: 'none',
+        color: 'inherit',
+        marginTop: 8,
+        marginBottom: 6,
+        marginRight: 15,
+        marginLeft: 15,
+        display: 'block'
+    }
+}
+
+const Navbar = ({darkMode, setDarkMode}: any): JSX.Element => {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -32,7 +45,7 @@ const Navbar = () => {
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <Link to={'/'} style={{display: 'flex', color: 'inherit', textDecoration: 'inherit'}}>
-                    <PolicyIcon sx={{marginTop: '4px', display: {xs: 'none', md: 'flex'}, mr: 1}}/>
+                        <PolicyIcon sx={{marginTop: '4px', display: {xs: 'none', md: 'flex'}, mr: 1}}/>
                         <Typography
                             variant="h6"
                             noWrap
@@ -69,17 +82,20 @@ const Navbar = () => {
                             }}
                         >
                             {pages.map((page) => (
-                                <Link style={{textDecoration: 'none', color: 'inherit'}}
-                                      to={`/${page.toLowerCase().replace(/\s/g, '-')}`}>
-                                    <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                        <Typography textAlign="center">{page}</Typography>
-                                    </MenuItem>
+                                <Link style={{...useStyles.menu, textAlign: 'center'}} to={`/${page.toLowerCase().replace(/\s/g, '-')}`}>
+                                    {page}
                                 </Link>
                             ))}
+                            <IconButton sx={{ml: 1, display: 'block', marginLeft: 'auto', marginRight: 'auto', padding: 1, paddingBottom: 0.4}}
+                                        onClick={() => setDarkMode(!darkMode)} color="inherit">
+                                {darkMode ? <Brightness7Icon/> : <Brightness4Icon/>}
+                            </IconButton>
                         </Menu>
                     </Box>
-                    <Link to={'/'} style={{display: 'flex', flexGrow: '1' ,color: 'inherit', textDecoration: 'inherit'}}>
-                        <PolicyIcon sx={{marginLeft: '66px', marginTop: '4px', display: {xs: 'flex', md: 'none'}, mr: 1}}/>
+                    <Link to={'/'}
+                          style={{display: 'flex', flexGrow: '1', color: 'inherit', textDecoration: 'inherit'}}>
+                        <PolicyIcon
+                            sx={{marginLeft: '66px', marginTop: '4px', display: {xs: 'flex', md: 'none'}, mr: 1}}/>
                         <Typography
                             variant="h6"
                             noWrap
@@ -108,6 +124,20 @@ const Navbar = () => {
                                 </Button>
                             </Link>
                         ))}
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                width: '5px',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginLeft: 1.4,
+                                marginRight: 1.4,
+                            }}
+                        >
+                        <IconButton sx={{ml: 1}} onClick={() => setDarkMode(!darkMode)} color="inherit">
+                            {darkMode ? <Brightness7Icon/> : <Brightness4Icon/>}
+                        </IconButton>
+                        </Box>
                     </Box>
                     <IconButton
                         size="large"
