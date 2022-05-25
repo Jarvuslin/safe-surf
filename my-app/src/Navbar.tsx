@@ -43,6 +43,7 @@ const Navbar = () => {
                                 letterSpacing: '.1rem',
                                 color: 'inherit',
                                 textDecoration: 'none',
+                                margin: 0
                             }}
                         >
                             SAFESURF
@@ -89,6 +90,7 @@ const Navbar = () => {
                                 letterSpacing: '.1rem',
                                 color: 'inherit',
                                 textDecoration: 'none',
+                                marginRight: '1px'
                             }}
                         >
                             SAFESURF
