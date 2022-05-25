@@ -6,12 +6,17 @@ import Container from '@mui/material/Container';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 const ContactUs = () => {
+    // contact form state
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [message, setDetails] = useState('');
     const [sending, setSending] = useState(false);
     const [sent, setSent] = useState(false);
-    const [titleError, setTitleError] = useState(false);
-    const [detailsError, setDetailsError] = useState(false);
+    const [firstNameError, setFirstNameError] = useState(false);
+    const [lastNameError, setLastNameError] = useState(false);
+    const [emailError, setEmailError] = useState(false);
+    const [messageError, setMessageError] = useState(false);
     const [error, setError] = useState(false);
 
     const useStyles = {
@@ -19,31 +24,37 @@ const ContactUs = () => {
             marginTop: '1rem',
         },
         field: {
-            marginTop: 2,
-            marginBottom: 2,
-            display: 'block'
+            marginTop: '1rem',
+
         }
     };
-
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setSent(false);
         setSending(true);
-        setTitleError(false);
-        setDetailsError(false);
+        setFirstNameError(false);
+        setLastNameError(false);
+        setEmailError(false);
+        setMessageError(false);
         setError(false);
 
+        if (!firstName) {
+            setFirstNameError(true);
+        }
+        if (!lastName) {
+            setLastNameError(true);
+        }
         if (!email) {
-            setTitleError(true);
-            setError(true);
+            setEmailError(true);
         }
         if (!message) {
-            setDetailsError(true);
-            setError(true);
+            setMessageError(true);
         }
 
-        if (email && message) {
+        setError(true);
+
+        if (firstName && lastName && email && message) {
             console.log(`email: ${email} | message ${message}`);
 
             await fetch('http://localhost:3500/api/contact-us', {
@@ -57,6 +68,7 @@ const ContactUs = () => {
                 })
             });
 
+            setError(false);
             setSent(true);
         }
         setSending(false);
@@ -67,58 +79,56 @@ const ContactUs = () => {
             <Typography
                 sx={useStyles.title}
                 variant='h6'
-                component='h2'
                 color='textPrimary'
                 align='center'
                 gutterBottom
             >
-                 Please fill out the following form
+                REACH OUT TO US
             </Typography>
             <form noValidate autoComplete="off" onSubmit={handleSubmit}>
                 <TextField
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setFirstName(e.target.value)}
                     id="filled-basic"
-                    label="Name"
+                    label="FIRST NAME"
                     variant="filled"
                     required
-                    error={titleError}
-                    sx={{width: `calc(50% - 0.4rem)`, marginTop: 1, marginRight: '0.4rem'}}
+                    error={firstNameError}
+                    sx={{width: `calc(50% - 0.3rem)`, marginTop: 1, marginRight: '0.3rem'}}
                 />
                 <TextField
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setLastName(e.target.value)}
                     id="filled-basic"
-                    label="Name"
+                    label="LAST NAME"
                     variant="filled"
                     required
-                    error={titleError}
-                    sx={{width: `calc(50% - 0.4rem)`, marginTop: 1, marginLeft: '0.4rem'}}
+                    error={lastNameError}
+                    sx={{width: `calc(50% - 0.3rem)`, marginTop: 1, marginLeft: '0.3rem'}}
                 />
-
-
                 <TextField
                     onChange={(e) => setEmail(e.target.value)}
                     sx={useStyles.field}
                     id="filled-basic"
-                    label="Name"
+                    label="EMAIL"
                     variant="filled"
                     fullWidth
                     required
-                    error={titleError}
+                    error={emailError}
                 />
                 <TextField
                     onChange={(e) => setDetails(e.target.value)}
                     sx={useStyles.field}
                     id="filled-basic"
-                    label="Message"
+                    label="MESSAGE"
                     variant="filled"
                     multiline
                     rows={8}
                     fullWidth
                     required
-                    error={detailsError}
+                    error={messageError}
                 />
                 <LoadingButton
                     type="submit"
+                    sx={{marginTop: '1rem'}}
                     color={error ? 'error' : 'primary'}
                     variant="contained"
                     fullWidth
@@ -127,14 +137,20 @@ const ContactUs = () => {
                 >
                     {sending ? 'Sending...' : 'Send'}
                 </LoadingButton>
-                <Typography sx={useStyles.title}
-                            variant='h6'
-                            component='h2'
-                            color='textPrimary'
-                            gutterBottom
+                {sent && <Typography sx={useStyles.title}
+                                     variant='subtitle1'
+                                     color='textPrimary'
+                                     gutterBottom
                 >
-                    {sent ? `Thank you ${email}` : ''}
-                </Typography>
+                    {`Thank you for your response, you can expect to hear back from us within 48 hours.`.toUpperCase()}
+                </Typography>}
+                {error && <Typography sx={useStyles.title}
+                                      variant='subtitle1'
+                                      color='error'
+                                      gutterBottom
+                >
+                    {'Please fill out the entirety of the form.'.toUpperCase()}
+                </Typography>}
             </form>
         </Container>
     );
