@@ -8,25 +8,27 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
 import {ThemeProvider, createTheme} from '@mui/material/styles';
 
-const darkTheme = createTheme({
-    palette: {
-        mode: 'dark',
-    },
-    typography: {
-        fontFamily: 'Akshar',
-        fontWeightLight: 300,
-        fontWeightRegular: 400,
-        fontWeightMedium: 500,
-        fontWeightBold: 600,
-    },
-});
-
 const App = () => {
+    const [darkMode, setDarkMode] = React.useState(true);
+
+    const darkTheme = createTheme({
+        palette: {
+            mode: darkMode ? 'dark' : 'light',
+        },
+        typography: {
+            fontFamily: 'Akshar',
+            fontWeightLight: 300,
+            fontWeightRegular: 400,
+            fontWeightMedium: 500,
+            fontWeightBold: 600,
+        },
+    });
+
     return (
         <ThemeProvider theme={darkTheme}>
             <CssBaseline/>
             <Router>
-                <Navbar/>
+                <Navbar darkMode={darkMode} setDarkMode={setDarkMode}/>
                 <Routes>
                     <Route path="/" element={<Home/>}/>
                     <Route path="/search" element={<Profanity/>}/>
