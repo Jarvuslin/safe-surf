@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import bodyParser from "body-parser";
 import cors from 'cors';
+import fetch, {ResponseInit} from "node-fetch";
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth"
 import ErrnoException = NodeJS.ErrnoException;
@@ -36,12 +37,26 @@ if (!fs.existsSync(folderPath)) {
 }
 
 // Allocating dictionary to memory
-let badWords: string[] = []
+let badWords: string[]
 fs.readFile('server/dictionary/bad-words', function (err: ErrnoException | null, data: { toString: () => string; }) {
     if (err) throw err;
     badWords = data.toString().replace(/\r\n/g, '\n').split('\n');
 });
 
+async function websiteValidity(link: string): Promise<number | undefined> {
+    try {
+        // HEAD request to check website validity
+        const response: ResponseInit = await fetch(link, {
+            method: 'HEAD',
+        });
+
+        console.log(response.status)
+
+        return response.status;
+    } catch {
+        return 404;
+    }
+}
 
 async function profanityData(link: string) {
     const browser = await puppeteer.launch({
@@ -97,18 +112,31 @@ async function profanityData(link: string) {
     }
 }
 
-app.post('/api/website-link', async function (req, res) {
-    console.log(`Link: ${await req.body.link}`)
 
-    const {link} = req.body
-    const profanityReport = await profanityData(link)
+app.post('/api/link-validity', async (req, res) => {
+    const {link} = req.body;
 
-    res.send(profanityReport)
+    const status = await websiteValidity(link);
 
-    console.log('Profanity processing completed')
+    console.log(status)
+
+    return res.send({
+        status
+    })
 })
 
-app.post('/api/profanity-download', async function (req, res) {
+
+app.post('/api/website-link', async (req, res) => {
+    const {link} = req.body;
+
+    const profanityReport = await profanityData(link);
+
+    res.send(profanityReport);
+
+    console.log('Profanity processing completed');
+})
+
+app.post('/api/profanity-download', async (req, res) => {
     let fileName: string
 
     if (req.body.html) {
@@ -120,7 +148,7 @@ app.post('/api/profanity-download', async function (req, res) {
     res.download(path.join(__dirname, '..', `/clones/${fileName!}`), 'clone.mhtml');
 })
 
-app.post('/api/contact-us', async function (req, res) {
+app.post('/api/contact-us', async (req, res) => {
     const {email, message} = req.body
 
     console.log(`email: ${email}, message: ${message}`)
@@ -129,5 +157,6 @@ app.post('/api/contact-us', async function (req, res) {
 });
 
 
-app.listen(process.env.PORT || 3500,
-    () => console.log(`Listening on port ${process.env.PORT || 3500}`))
+app.listen(process.env.PORT || 3500, () => {
+    console.log(`Listening on port ${process.env.PORT || 3500}`)
+})
