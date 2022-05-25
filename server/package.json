@@ -33,7 +33,7 @@
     "dotenv": "^16.0.0",
     "findandreplacedomtext": "^0.4.6",
     "fs": "^0.0.1-security",
-    "node-fetch": "^3.2.3",
+    "node-fetch": "^3.2.4",
     "perf_hooks": "^0.0.1",
     "puppeteer-extra": "^3.2.3",
     "puppeteer-extra-plugin-stealth": "^2.9.0"
