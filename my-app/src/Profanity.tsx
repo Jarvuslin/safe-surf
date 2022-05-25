@@ -29,6 +29,10 @@ const Profanity = () => {
             marginTop: 2,
             marginBottom: 2,
             display: 'block'
+        },
+        paper: {
+            paddingTop: 1,
+            paddingBottom: 1
         }
     };
 
@@ -192,21 +196,21 @@ const Profanity = () => {
                             </Typography>
                             <ul id='profanity-data'>
                                 <li>
-                                    <Paper elevation={12}>
-                                        <Typography>WORD COUNT</Typography>
+                                    <Paper elevation={12} sx={useStyles.paper}>
+                                        <Typography>TOTAL WORDS</Typography>
                                         <Typography>{profanityReport.wordCount}</Typography>
                                     </Paper>
                                 </li>
                                 <li>
-                                    <Paper elevation={12}>
-                                        <Typography>PROFANITY COUNT</Typography>
+                                    <Paper elevation={12} sx={useStyles.paper}>
+                                        <Typography>PROFANE WORDS</Typography>
                                         <Typography>{profanityReport.profanityCount}</Typography>
                                     </Paper>
                                 </li>
                                 <li>
-                                    <Paper elevation={12}>
-                                        <Typography>PROFANITY %</Typography>
-                                        <Typography>{profanityReport.profanityMakeup}</Typography>
+                                    <Paper elevation={12} sx={useStyles.paper}>
+                                        <Typography>PROFANITY MAKEUP</Typography>
+                                        <Typography>{`${profanityReport.profanityMakeup}%`}</Typography>
                                     </Paper>
                                 </li>
                             </ul>
