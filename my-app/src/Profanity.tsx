@@ -9,12 +9,10 @@ import Paper from '@mui/material/Paper';
 import Button from "@mui/material/Button";
 
 const Profanity = () => {
-    // state
     const [link, setLink] = useState('');
     const [isPending, setIsPending] = useState(false);
     const [infoRetrieved, setInfoRetrieved] = useState(false);
     const [error, setError] = useState('')
-    // profanity data
     const [profanityReport, setProfanityReport] = useState({
         wordCount: null,
         profanityCount: null,

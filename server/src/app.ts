@@ -65,8 +65,7 @@ async function profanityData(link: string) {
     const page = await browser.newPage();
     await page.goto(link);
 
-    const startTime = performance.now()
-
+    const startTime = performance.now() // start timer
 
     let newHtml = await page.evaluate(() => document.body.innerHTML)
 
@@ -86,8 +85,7 @@ async function profanityData(link: string) {
             throw err;
     });
 
-    // time
-    const endTime = performance.now()
+    const endTime = performance.now() // end timer
 
     console.log(`${Math.round(((endTime - startTime) / 1000) * 100) / 100} seconds || ${endTime - startTime} milliseconds`)
 

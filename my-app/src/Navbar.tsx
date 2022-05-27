@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import {Link} from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -27,7 +27,7 @@ const useStyles = {
     }
 }
 
-const Navbar = ({darkMode, setDarkMode}: any): JSX.Element => {
+const Navbar = ({darkMode, setDarkMode}: {darkMode: boolean, setDarkMode: Dispatch<SetStateAction<boolean>>}): JSX.Element => {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
