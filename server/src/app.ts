@@ -1,5 +1,6 @@
-import fs from "fs";
+import fs, {Stats} from "fs";
 import dotenv from "dotenv";
+import cron from "node-cron";
 import express from "express";
 import bodyParser from "body-parser";
 import cors from 'cors';
@@ -142,13 +143,6 @@ app.post('/api/profanity-download', async (req, res) => {
     }
 
     res.download(path.join(__dirname, '..', `storage/clones/${fileName!}`));
-
-    setTimeout(() => {
-        fs.unlink(path.join(__dirname, '..', `storage/clones/${fileName!}`), function (err: ErrnoException | null) {
-            if (err)
-                throw err;
-        });
-    }, 10000);
 })
 
 app.post('/api/contact-us', async (req, res) => {
@@ -162,4 +156,27 @@ app.post('/api/contact-us', async (req, res) => {
 
 app.listen(process.env.PORT || 3500, () => {
     console.log(`Listening on port ${process.env.PORT || 3500}`)
+})
+
+
+function fileCleanup() {
+    fs.readdir(path.join(__dirname, '..', 'storage/clones'), (err: ErrnoException | null, files: string[]) => {
+        if (err) throw err;
+
+        for (let file of files) {
+            fs.stat(path.join(__dirname, '..', 'storage/clones', file), (err: ErrnoException | null, stats: Stats) => {
+                if (err) throw err;
+
+                if (stats.isFile() && (Date.now() - stats.mtimeMs) > 30 * 60 * 1000) {
+                    fs.unlink(path.join(__dirname, '..', 'storage/clones', file), (err: ErrnoException | null) => {
+                        if (err) throw err;
+                    })
+                }
+            })
+        }
+    })
+}
+
+cron.schedule('*/5 * * * *', async () => {
+    fileCleanup();
 })
