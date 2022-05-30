@@ -31,14 +31,14 @@ app.use(bodyParser.json()) // parse application/json
 
 
 // create folder if it doesn't exist
-const folderPath = path.join(__dirname, "..", "clones");
+const folderPath = path.join(__dirname, "..", "storage/clones");
 if (!fs.existsSync(folderPath)) {
     fs.mkdirSync(folderPath);
 }
 
 // Allocating dictionary to memory
 let badWords: string[]
-fs.readFile('server/dictionary/bad-words', function (err: ErrnoException | null, data: { toString: () => string; }) {
+fs.readFile('server/storage/dictionary/bad-words', function (err: ErrnoException | null, data: { toString: () => string; }) {
     if (err) throw err;
     badWords = data.toString().replace(/\r\n/g, '\n').split('\n');
 });
@@ -50,15 +50,13 @@ async function websiteValidity(link: string): Promise<number | undefined> {
             method: 'HEAD',
         });
 
-        console.log(response.status)
-
         return response.status;
     } catch {
         return 404;
     }
 }
 
-async function profanityData(link: string) {
+async function profanityData(link: string, fileName: string) {
     const browser = await puppeteer.launch({
         headless: false
     })
@@ -78,9 +76,9 @@ async function profanityData(link: string) {
     const cdp = await page.target().createCDPSession();
     let {data} = await cdp.send('Page.captureSnapshot');
 
-    await page.screenshot({path: 'server/clones/screenshot.png', fullPage: true});
+    await page.screenshot({path: `server/storage/clones/${fileName}.png`, fullPage: true});
 
-    fs.writeFile('server/clones/clone.mhtml', data, "utf-8", function (err: ErrnoException | null) {
+    fs.writeFile(`server/storage/clones/${fileName}.mhtml`, data, "utf-8", function (err: ErrnoException | null) {
         if (err)
             throw err;
     });
@@ -116,8 +114,6 @@ app.post('/api/link-validity', async (req, res) => {
 
     const status = await websiteValidity(link);
 
-    console.log(status)
-
     return res.send({
         status
     })
@@ -125,9 +121,9 @@ app.post('/api/link-validity', async (req, res) => {
 
 
 app.post('/api/website-link', async (req, res) => {
-    const {link} = req.body;
+    const {link, fileName} = req.body;
 
-    const profanityReport = await profanityData(link);
+    const profanityReport = await profanityData(link, fileName);
 
     res.send(profanityReport);
 
@@ -135,15 +131,24 @@ app.post('/api/website-link', async (req, res) => {
 })
 
 app.post('/api/profanity-download', async (req, res) => {
+    const {uuid} = req.body;
+
     let fileName: string
 
     if (req.body.html) {
-        fileName = 'clone.mhtml'
+        fileName = `${uuid}.mhtml`
     } else if (req.body.img) {
-        fileName = 'screenshot.png'
+        fileName = `${uuid}.png`
     }
 
-    res.download(path.join(__dirname, '..', `/clones/${fileName!}`), 'clone.mhtml');
+    res.download(path.join(__dirname, '..', `storage/clones/${fileName!}`));
+
+    setTimeout(() => {
+        fs.unlink(path.join(__dirname, '..', `storage/clones/${fileName!}`), function (err: ErrnoException | null) {
+            if (err)
+                throw err;
+        });
+    }, 10000);
 })
 
 app.post('/api/contact-us', async (req, res) => {
