@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {useState} from "react";
+import { v4 as uuidv4 } from 'uuid';
 import LoadingButton from "@mui/lab/LoadingButton";
 import Typography from "@mui/material/Typography";
 import TextField from '@mui/material/TextField';
@@ -9,6 +10,7 @@ import Paper from '@mui/material/Paper';
 import Button from "@mui/material/Button";
 
 const Profanity = () => {
+    const [uuid, setUuid] = useState('');
     const [link, setLink] = useState('');
     const [isPending, setIsPending] = useState(false);
     const [infoRetrieved, setInfoRetrieved] = useState(false);
@@ -45,6 +47,7 @@ const Profanity = () => {
                     link: {link},
                     html: html,
                     img: img,
+                    uuid: uuid
                 })
             });
 
@@ -86,7 +89,6 @@ const Profanity = () => {
         }
 
         try {
-            console.log('submitting 2');
             const response: Response = await fetch('http://localhost:3500/api/link-validity', {
                 method: 'POST',
                 headers: {
@@ -113,14 +115,16 @@ const Profanity = () => {
 
         setError('');
 
+        const fileName = uuidv4();
+        setUuid(fileName);
+
         try {
-            console.log('submitting 2');
             const response: Response = await fetch('http://localhost:3500/api/website-link', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({link})
+                body: JSON.stringify({link, fileName})
             });
 
             setIsPending(false);
