@@ -1,5 +1,7 @@
+import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import React from "react";
+import {Link} from "react-router-dom";
 
 const AboutUs = () => {
     const useStyles = {
@@ -9,7 +11,7 @@ const AboutUs = () => {
     };
 
     return (
-        <div className="about-us">
+        <Container>
             <Typography
                 sx={useStyles.title}
                 variant='h6'
@@ -19,7 +21,15 @@ const AboutUs = () => {
             >
                 ABOUT US
             </Typography>
-        </div>
+            <Typography>
+                Computer science project created by two high school students.
+            </Typography>
+            <Link to={'/contact-us'}>
+            <Typography>
+                If you would like to reach out, click here.
+            </Typography>
+            </Link>
+</Container>
     );
 }
 
