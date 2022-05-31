@@ -168,7 +168,7 @@ function fileCleanup() {
                 if (err) throw err;
 
                 if (stats.isFile() && (Date.now() - stats.mtimeMs) > 30 * 60 * 1000) {
-                    fs.unlink(path.join(__dirname, '..', 'storage/clones', file), (err: ErrnoException | null) => {
+                    fs.rm(path.join(__dirname, '..', 'storage/clones', file), (err: ErrnoException | null) => {
                         if (err) throw err;
                     })
                 }
