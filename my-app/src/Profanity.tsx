@@ -18,7 +18,8 @@ const Profanity = () => {
     const [profanityReport, setProfanityReport] = useState({
         wordCount: null,
         profanityCount: null,
-        profanityMakeup: null
+        profanityMakeup: null,
+        timestamp: null
     });
 
     const useStyles = {
@@ -196,7 +197,7 @@ const Profanity = () => {
                             >
                                 REPORT
                             </Typography>
-                            <ul id='profanity-data'>
+                            <ul id='profanity-data' style={{paddingBottom: 0}}>
                                 <li>
                                     <Paper elevation={12} sx={useStyles.paper}>
                                         <Typography>TOTAL WORDS</Typography>
@@ -216,6 +217,9 @@ const Profanity = () => {
                                     </Paper>
                                 </li>
                             </ul>
+                            <Typography align='center' gutterBottom sx={{color: "LightGray"}}>
+                                {`Generated in ${profanityReport.timestamp} ${profanityReport.timestamp === '1' ? 'second' : 'seconds'}`}
+                            </Typography>
                         </Paper>
                     </div>
                     <div className="profanity-buttons">

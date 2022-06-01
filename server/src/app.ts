@@ -86,8 +86,6 @@ async function profanityData(link: string, fileName: string) {
 
     const endTime = performance.now() // end timer
 
-    console.log(`${Math.round(((endTime - startTime) / 1000) * 100) / 100} seconds || ${endTime - startTime} milliseconds`)
-
     await browser.close();
 
     /* Profanity Information */
@@ -105,7 +103,8 @@ async function profanityData(link: string, fileName: string) {
     return {
         wordCount,
         profanityCount,
-        profanityMakeup: Math.round(((profanityCount / wordCount) * 100) * 100) / 100
+        profanityMakeup: Math.round(((profanityCount / wordCount) * 100) * 100) / 100,
+        timestamp: Math.round(((endTime - startTime) / 1000) * 100) / 100
     }
 }
 
