@@ -14,12 +14,12 @@ const Profanity = () => {
     const [link, setLink] = useState('');
     const [isPending, setIsPending] = useState(false);
     const [infoRetrieved, setInfoRetrieved] = useState(false);
+    const [timestamp, setTimestamp] = useState('');
     const [error, setError] = useState('')
     const [profanityReport, setProfanityReport] = useState({
         wordCount: null,
         profanityCount: null,
-        profanityMakeup: null,
-        timestamp: null
+        profanityMakeup: null
     });
 
     const useStyles = {
@@ -82,6 +82,9 @@ const Profanity = () => {
 
         setInfoRetrieved(false);
         setIsPending(true);
+        setTimestamp('')
+
+        const start = new Date();
 
         if (link.length === 0) {
             setError('PLEASE ENTER A LINK');
@@ -128,6 +131,9 @@ const Profanity = () => {
                 body: JSON.stringify({link, fileName})
             });
 
+            const end = new Date();
+
+            setTimestamp(`${Math.round((end.getTime() - start.getTime()) / 1000 * 100) / 100}`);
             setIsPending(false);
             setInfoRetrieved(true);
             setProfanityReport(await response.json());
@@ -137,6 +143,7 @@ const Profanity = () => {
                 console.log('Fetch aborted.');
                 return;
             }
+
             setError(error.message);
             setIsPending(false);
         }
@@ -218,7 +225,7 @@ const Profanity = () => {
                                 </li>
                             </ul>
                             <Typography align='center' gutterBottom sx={{color: "LightGray"}}>
-                                {`Generated in ${profanityReport.timestamp} ${profanityReport.timestamp === '1' ? 'second' : 'seconds'}`}
+                                {`Generated in ${timestamp} seconds`}
                             </Typography>
                         </Paper>
                     </div>

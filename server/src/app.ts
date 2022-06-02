@@ -11,6 +11,7 @@ import ErrnoException = NodeJS.ErrnoException;
 import {performance} from 'perf_hooks';
 import {fileURLToPath} from "url";
 import path from "path";
+import nodemailer from "nodemailer";
 
 // file pathing
 const __filename = fileURLToPath(import.meta.url);
@@ -57,10 +58,12 @@ async function websiteValidity(link: string): Promise<number | undefined> {
     }
 }
 
+// open puppeteer browser to be used later
+const browser = await puppeteer.launch({
+    headless: true
+});
+
 async function profanityData(link: string, fileName: string) {
-    const browser = await puppeteer.launch({
-        headless: false
-    })
     const page = await browser.newPage();
     await page.goto(link);
 
@@ -86,7 +89,9 @@ async function profanityData(link: string, fileName: string) {
 
     const endTime = performance.now() // end timer
 
-    await browser.close();
+    console.log(`${Math.round(((endTime - startTime) / 1000) * 100) / 100} seconds || ${endTime - startTime} milliseconds`)
+
+    await page.close();
 
     /* Profanity Information */
     const textContent: string = data.trim().replace(/[\s]+/g, " ")
@@ -95,7 +100,7 @@ async function profanityData(link: string, fileName: string) {
     let wordCount: number = textContent.split(" ").length;
 
     for (let badWord of badWords) {
-        let re = new RegExp(badWord, "gi");
+        let re = new RegExp(badWord, "npm i --save-dev @types/nodemailergi");
 
         profanityCount += (textContent.match(re)?.length) ?? 0
     }
@@ -103,8 +108,7 @@ async function profanityData(link: string, fileName: string) {
     return {
         wordCount,
         profanityCount,
-        profanityMakeup: Math.round(((profanityCount / wordCount) * 100) * 100) / 100,
-        timestamp: Math.round(((endTime - startTime) / 1000) * 100) / 100
+        profanityMakeup: Math.round(((profanityCount / wordCount) * 100) * 100) / 100
     }
 }
 
@@ -149,6 +153,29 @@ app.post('/api/contact-us', async (req, res) => {
 
     console.log(`email: ${email}, message: ${message}`)
 
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+        }
+    });
+
+    const mailOptions = {
+        from: 'theeinsight@gmail.com',
+        to: email,
+        subject: 'Contact Us',
+        text: message
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+
     return res.sendStatus(200).send()
 });
 
@@ -166,7 +193,7 @@ function fileCleanup() {
             fs.stat(path.join(__dirname, '..', 'storage/clones', file), (err: ErrnoException | null, stats: Stats) => {
                 if (err) throw err;
 
-                if (stats.isFile() && (Date.now() - stats.mtimeMs) > 30 * 60 * 1000) {
+                if (stats.isFile() && (Date.now() - stats.mtimeMs) > 10000) {
                     fs.rm(path.join(__dirname, '..', 'storage/clones', file), (err: ErrnoException | null) => {
                         if (err) throw err;
                     })
@@ -176,6 +203,7 @@ function fileCleanup() {
     })
 }
 
-cron.schedule('*/5 * * * *', async () => {
+cron.schedule('*/1 * * * *', async () => {
+    console.log('Cron job running');
     fileCleanup();
 })
