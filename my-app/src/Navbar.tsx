@@ -13,7 +13,7 @@ import PolicyIcon from '@mui/icons-material/Policy';
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 
-const pages = ['SEARCH', 'ABOUT US', 'CONTACT US'];
+const pages: string[] = ['SEARCH', 'ABOUT US', 'CONTACT US'];
 
 const useStyles = {
     menu: {
@@ -30,13 +30,11 @@ const useStyles = {
 const Navbar = ({darkMode, setDarkMode}: {darkMode: boolean, setDarkMode: Dispatch<SetStateAction<boolean>>}): JSX.Element => {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
 
-    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-        console.log('run' + event.currentTarget)
+    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>): void => {
         setAnchorElNav(event.currentTarget);
     };
 
-    const handleCloseNavMenu = () => {
-        console.log('clicked')
+    const handleCloseNavMenu = (): void => {
         setAnchorElNav(null);
     };
 

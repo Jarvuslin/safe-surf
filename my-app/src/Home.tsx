@@ -1,7 +1,7 @@
 import React from 'react'
 import Typography from '@mui/material/Typography';
 
-const Home = () => {
+const Home = (): JSX.Element => {
     const useStyles = {
         title: {
             marginTop: '1rem',

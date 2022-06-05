@@ -9,17 +9,17 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Paper from '@mui/material/Paper';
 import Button from "@mui/material/Button";
 
-const Profanity = () => {
-    const [uuid, setUuid] = useState('');
-    const [link, setLink] = useState('');
-    const [isPending, setIsPending] = useState(false);
-    const [infoRetrieved, setInfoRetrieved] = useState(false);
-    const [timestamp, setTimestamp] = useState('');
-    const [error, setError] = useState('')
-    const [profanityReport, setProfanityReport] = useState({
-        wordCount: null,
-        profanityCount: null,
-        profanityMakeup: null
+const Profanity = (): JSX.Element => {
+    const [uuid, setUuid] = useState<string>('');
+    const [link, setLink] = useState<string>('');
+    const [isPending, setIsPending] = useState<boolean>(false);
+    const [infoRetrieved, setInfoRetrieved] = useState<boolean>(false);
+    const [timestamp, setTimestamp] = useState<string>('');
+    const [error, setError] = useState<string>('')
+    const [profanityReport, setProfanityReport] = useState<{ [key: string]: number }>({
+        wordCount: 0,
+        profanityCount: 0,
+        profanityMakeup: 0
     });
 
     const useStyles = {
@@ -37,11 +37,11 @@ const Profanity = () => {
         }
     };
 
-    const handleDownload = async (html: boolean, img: boolean, e: { preventDefault: () => void; }) => {
+    const handleDownload = async (html: boolean, img: boolean, e: { preventDefault: () => void; }): Promise<void> => {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:3500/api/profanity-download', {
+            const response: Response = await fetch('http://localhost:3500/api/profanity-download', {
                 method: 'POST',
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
@@ -52,10 +52,10 @@ const Profanity = () => {
                 })
             });
 
-            const data = await response.blob();
-            const href = URL.createObjectURL(data);
+            const data: Blob = await response.blob();
+            const href: string = URL.createObjectURL(data);
 
-            const a = document.createElement("a");
+            const a: HTMLAnchorElement = document.createElement("a");
 
             if (html) {
                 a.download = 'clone.mhtml'
@@ -77,14 +77,14 @@ const Profanity = () => {
     };
 
 
-    const handleSubmit = async (e: { preventDefault: () => void; }) => {
+    const handleSubmit = async (e: { preventDefault: () => void; }): Promise<void> => {
         e.preventDefault();
 
         setInfoRetrieved(false);
         setIsPending(true);
         setTimestamp('')
 
-        const start = new Date();
+        const start: Date = new Date();
 
         if (link.length === 0) {
             setError('PLEASE ENTER A LINK');
@@ -119,7 +119,7 @@ const Profanity = () => {
 
         setError('');
 
-        const fileName = uuidv4();
+        const fileName: string = uuidv4();
         setUuid(fileName);
 
         try {
@@ -131,7 +131,7 @@ const Profanity = () => {
                 body: JSON.stringify({link, fileName})
             });
 
-            const end = new Date();
+            const end: Date = new Date();
 
             setTimestamp(`${Math.round((end.getTime() - start.getTime()) / 1000 * 100) / 100}`);
             setIsPending(false);

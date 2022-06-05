@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import React from "react";
 import {Link} from "react-router-dom";
 
-const AboutUs = () => {
+const AboutUs = (): JSX.Element => {
     const useStyles = {
         title: {
             marginTop: '1rem',

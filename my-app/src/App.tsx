@@ -6,12 +6,12 @@ import ContactUs from "./ContactUs";
 import React from 'react';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
-import {ThemeProvider, createTheme} from '@mui/material/styles';
+import {ThemeProvider, createTheme, Theme} from '@mui/material/styles';
 
-const App = () => {
-    const [darkMode, setDarkMode] = React.useState(true);
+const App = (): JSX.Element => {
+    const [darkMode, setDarkMode] = React.useState<boolean>(true);
 
-    const darkTheme = createTheme({
+    const darkTheme: Theme = createTheme({
         palette: {
             mode: darkMode ? 'dark' : 'light',
         },

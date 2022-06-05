@@ -7,11 +7,10 @@ import cors from 'cors';
 import fetch, {ResponseInit} from "node-fetch";
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth"
-import ErrnoException = NodeJS.ErrnoException;
-import {performance} from 'perf_hooks';
 import {fileURLToPath} from "url";
 import path from "path";
-import nodemailer from "nodemailer";
+import nodemailer, {SentMessageInfo} from "nodemailer";
+import ErrnoException = NodeJS.ErrnoException;
 
 // file pathing
 const __filename = fileURLToPath(import.meta.url);
@@ -67,13 +66,29 @@ async function profanityData(link: string, fileName: string) {
     const page = await browser.newPage();
     await page.goto(link);
 
-    const startTime = performance.now() // start timer
+    const profanityData = await page.evaluate((badWords) => {
+        const content: string[] = document.body.innerText.replace(/[^\w\s]/gi, '').split(/\s+|\n+/);
 
-    let newHtml = await page.evaluate(() => document.body.innerHTML)
+        const wordCount: number = content.length;
+        const profanityCount: number = content.filter(word => badWords.includes(word.toLowerCase())).length;
+        const profanityMakeup: number = Math.round((profanityCount / wordCount) * 100 * 100) / 100;
 
-    for (let badWord of badWords) {
-        newHtml = newHtml.replace(new RegExp(`\\b${badWord}\\b`, "gi"), '*'.repeat(badWord.length));
-    }
+        return {
+            wordCount,
+            profanityCount,
+            profanityMakeup
+        }
+    }, badWords);
+
+    let newHtml: string = await page.evaluate((badWords) => {
+        let html: string = document.body.innerHTML;
+
+        for (let badWord of badWords) {
+            html = html.replace(new RegExp(`\\b${badWord}\\b`, "gi"), '*'.repeat(badWord.length));
+        }
+
+        return html;
+    }, badWords);
 
     await page.evaluate((newHtml) => document.body.innerHTML = newHtml, newHtml)
 
@@ -87,29 +102,9 @@ async function profanityData(link: string, fileName: string) {
             throw err;
     });
 
-    const endTime = performance.now() // end timer
-
-    console.log(`${Math.round(((endTime - startTime) / 1000) * 100) / 100} seconds || ${endTime - startTime} milliseconds`)
-
     await page.close();
 
-    /* Profanity Information */
-    const textContent: string = data.trim().replace(/[\s]+/g, " ")
-
-    let profanityCount: number = 0;
-    let wordCount: number = textContent.split(" ").length;
-
-    for (let badWord of badWords) {
-        let re = new RegExp(badWord, "npm i --save-dev @types/nodemailergi");
-
-        profanityCount += (textContent.match(re)?.length) ?? 0
-    }
-
-    return {
-        wordCount,
-        profanityCount,
-        profanityMakeup: Math.round(((profanityCount / wordCount) * 100) * 100) / 100
-    }
+    return profanityData;
 }
 
 
@@ -129,9 +124,7 @@ app.post('/api/website-link', async (req, res) => {
 
     const profanityReport = await profanityData(link, fileName);
 
-    res.send(profanityReport);
-
-    console.log('Profanity processing completed');
+    return res.send(profanityReport);
 })
 
 app.post('/api/profanity-download', async (req, res) => {
@@ -145,13 +138,13 @@ app.post('/api/profanity-download', async (req, res) => {
         fileName = `${uuid}.png`
     }
 
-    res.download(path.join(__dirname, '..', `storage/clones/${fileName!}`));
+    return res.download(path.join(__dirname, '..', `storage/clones/${fileName!}`));
 })
 
 app.post('/api/contact-us', async (req, res) => {
-    const {email, message} = req.body
+    const {firstName, lastName, email, message} = req.body
 
-    console.log(`email: ${email}, message: ${message}`)
+    console.log(`${firstName} ${lastName} || ${email} || ${message}`)
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -162,13 +155,13 @@ app.post('/api/contact-us', async (req, res) => {
     });
 
     const mailOptions = {
-        from: 'theeinsight@gmail.com',
-        to: email,
-        subject: 'Contact Us',
+        from: 'safesurf.support@gmail.com',
+        to: 'safesurf@gmail.com',
+        subject: 'New Inquiry',
         text: message
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
+    transporter.sendMail(mailOptions, (error: Error | null, info: SentMessageInfo) => {
         if (error) {
             console.log(error);
         } else {

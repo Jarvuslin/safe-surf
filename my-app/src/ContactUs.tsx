@@ -5,18 +5,21 @@ import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
-const ContactUs = () => {
-    // contact form state
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [message, setDetails] = useState('');
+const ContactUs = (): JSX.Element => {
+    const [fieldValues, setFieldValues] = useState<{ [key: string]: string }>({
+        firstName: '',
+        lastName: '',
+        email: '',
+        message: ''
+    });
+    const [fieldErrors, setFieldErrors] = useState<{ [key: string]: boolean }>({
+        firstName: false,
+        lastName: false,
+        email: false,
+        message: false
+    });
     const [sending, setSending] = useState(false);
     const [sent, setSent] = useState(false);
-    const [firstNameError, setFirstNameError] = useState(false);
-    const [lastNameError, setLastNameError] = useState(false);
-    const [emailError, setEmailError] = useState(false);
-    const [messageError, setMessageError] = useState(false);
     const [error, setError] = useState(false);
 
     const useStyles = {
@@ -29,42 +32,53 @@ const ContactUs = () => {
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
+
+        setFieldErrors({
+            firstName: false,
+            lastName: false,
+            email: false,
+            message: false
+        })
         setSent(false);
         setSending(true);
-        setFirstNameError(false);
-        setLastNameError(false);
-        setEmailError(false);
-        setMessageError(false);
         setError(false);
 
-        if (!firstName) {
-            setFirstNameError(true);
+        if (!fieldValues.firstName) {
+            setFieldErrors({
+                firstName: true
+            });
         }
-        if (!lastName) {
-            setLastNameError(true);
+        if (!fieldValues.lastName) {
+            setFieldErrors({
+                lastName: true
+            });
         }
-        if (!email) {
-            setEmailError(true);
+        if (!fieldValues.email) {
+            setFieldErrors({
+                email: true
+            });
         }
-        if (!message) {
-            setMessageError(true);
+        if (!fieldValues.message) {
+            setFieldErrors({
+                message: true
+            });
         }
 
         setError(true);
 
-        if (firstName && lastName && email && message) {
-            console.log(`email: ${email} | message ${message}`);
-
+        if (fieldValues.firstName && fieldValues.lastName && fieldValues.email && fieldValues.message) {
             await fetch('http://localhost:3500/api/contact-us', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    email,
-                    message
+                    firstName: fieldValues.firstName,
+                    lastName: fieldValues.lastName,
+                    email: fieldValues.email,
+                    message: fieldValues.message
                 })
             });
 
@@ -87,35 +101,35 @@ const ContactUs = () => {
             </Typography>
             <form noValidate autoComplete="off" onSubmit={handleSubmit}>
                 <TextField
-                    onChange={(e) => setFirstName(e.target.value)}
+                    onChange={(e) => setFieldValues({...fieldValues, firstName: e.target.value})}
                     id="filled-basic"
                     label="FIRST NAME"
                     variant="filled"
                     required
-                    error={firstNameError}
+                    error={fieldErrors.firstName}
                     sx={{width: `calc(50% - 0.3rem)`, marginTop: 1, marginRight: '0.3rem'}}
                 />
                 <TextField
-                    onChange={(e) => setLastName(e.target.value)}
+                    onChange={(e) => setFieldValues({...fieldValues, lastName: e.target.value})}
                     id="filled-basic"
                     label="LAST NAME"
                     variant="filled"
                     required
-                    error={lastNameError}
+                    error={fieldErrors.lastName}
                     sx={{width: `calc(50% - 0.3rem)`, marginTop: 1, marginLeft: '0.3rem'}}
                 />
                 <TextField
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setFieldValues({...fieldValues, email: e.target.value})}
                     sx={useStyles.field}
                     id="filled-basic"
                     label="EMAIL"
                     variant="filled"
                     fullWidth
                     required
-                    error={emailError}
+                    error={fieldErrors.email}
                 />
                 <TextField
-                    onChange={(e) => setDetails(e.target.value)}
+                    onChange={(e) => setFieldValues({...fieldValues, message: e.target.value})}
                     sx={useStyles.field}
                     id="filled-basic"
                     label="MESSAGE"
@@ -124,7 +138,7 @@ const ContactUs = () => {
                     rows={8}
                     fullWidth
                     required
-                    error={messageError}
+                    error={fieldErrors.message}
                 />
                 <LoadingButton
                     type="submit"
