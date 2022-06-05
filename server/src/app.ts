@@ -1,7 +1,8 @@
-import fs, {Stats} from "fs";
 import dotenv from "dotenv";
+import {Stats} from "fs";
+import fs from "fs/promises";
 import cron from "node-cron";
-import express from "express";
+import express, {Express} from "express";
 import bodyParser from "body-parser";
 import cors from 'cors';
 import fetch, {ResponseInit} from "node-fetch";
@@ -10,11 +11,10 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth"
 import {fileURLToPath} from "url";
 import path from "path";
 import nodemailer, {SentMessageInfo} from "nodemailer";
-import ErrnoException = NodeJS.ErrnoException;
 
 // file pathing
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename: string = fileURLToPath(import.meta.url);
+const __dirname: string = path.dirname(__filename);
 
 // .env setup
 dotenv.config({path: path.join(__dirname, "..", ".env")});
@@ -23,26 +23,26 @@ dotenv.config({path: path.join(__dirname, "..", ".env")});
 puppeteer.use(StealthPlugin());
 
 // express setup
-const app = express()
+const app: Express = express()
 app.use(cors())
 
 // body parser setup
 app.use(bodyParser.urlencoded({extended: false})) // parse application/x-www-form-urlencoded
 app.use(bodyParser.json()) // parse application/json
 
-
 // create folder if it doesn't exist
-const folderPath = path.join(__dirname, "..", "storage/clones");
-if (!fs.existsSync(folderPath)) {
-    fs.mkdirSync(folderPath);
-}
+await fs.mkdir(path.join(__dirname, '..', 'storage/clones'), {recursive: true});
 
 // Allocating dictionary to memory
-let badWords: string[]
-fs.readFile('server/storage/dictionary/bad-words', function (err: ErrnoException | null, data: { toString: () => string; }) {
-    if (err) throw err;
-    badWords = data.toString().replace(/\r\n/g, '\n').split('\n');
+const badWords: string[] = (await fs.readFile(path.join(__dirname, '..', 'storage/dictionary/bad-words'), 'utf-8'))
+    .replace(/\r\n/g, '\n')
+    .split('\n');
+
+// open puppeteer browser to be used later
+const browser = await puppeteer.launch({
+    headless: true
 });
+
 
 async function websiteValidity(link: string): Promise<number | undefined> {
     try {
@@ -56,11 +56,6 @@ async function websiteValidity(link: string): Promise<number | undefined> {
         return 404;
     }
 }
-
-// open puppeteer browser to be used later
-const browser = await puppeteer.launch({
-    headless: true
-});
 
 async function profanityData(link: string, fileName: string) {
     const page = await browser.newPage();
@@ -97,14 +92,23 @@ async function profanityData(link: string, fileName: string) {
 
     await page.screenshot({path: `server/storage/clones/${fileName}.png`, fullPage: true});
 
-    fs.writeFile(`server/storage/clones/${fileName}.mhtml`, data, "utf-8", function (err: ErrnoException | null) {
-        if (err)
-            throw err;
-    });
+    await fs.writeFile(path.join(__dirname, '..', 'storage/clones', fileName + '.mhtml'), data, "utf-8");
 
     await page.close();
 
     return profanityData;
+}
+
+async function fileCleanup(): Promise<void> {
+    const files: string[] = await fs.readdir(path.join(__dirname, '..', 'storage/clones'));
+
+    for (let file of files) {
+        const stats: Stats = await fs.stat(path.join(__dirname, '..', 'storage/clones', file));
+
+        if (stats.isFile() && (Date.now() - stats.mtimeMs) > 10000) {
+            await fs.unlink(path.join(__dirname, '..', 'storage/clones', file));
+        }
+    }
 }
 
 
@@ -117,7 +121,6 @@ app.post('/api/link-validity', async (req, res) => {
         status
     })
 })
-
 
 app.post('/api/website-link', async (req, res) => {
     const {link, fileName} = req.body;
@@ -169,34 +172,14 @@ app.post('/api/contact-us', async (req, res) => {
         }
     });
 
-    return res.sendStatus(200).send()
+    return res.sendStatus(200);
 });
-
 
 app.listen(process.env.PORT || 3500, () => {
     console.log(`Listening on port ${process.env.PORT || 3500}`)
 })
 
 
-function fileCleanup() {
-    fs.readdir(path.join(__dirname, '..', 'storage/clones'), (err: ErrnoException | null, files: string[]) => {
-        if (err) throw err;
-
-        for (let file of files) {
-            fs.stat(path.join(__dirname, '..', 'storage/clones', file), (err: ErrnoException | null, stats: Stats) => {
-                if (err) throw err;
-
-                if (stats.isFile() && (Date.now() - stats.mtimeMs) > 10000) {
-                    fs.rm(path.join(__dirname, '..', 'storage/clones', file), (err: ErrnoException | null) => {
-                        if (err) throw err;
-                    })
-                }
-            })
-        }
-    })
-}
-
 cron.schedule('*/1 * * * *', async () => {
-    console.log('Cron job running');
-    fileCleanup();
-})
+    await fileCleanup();
+});
