@@ -1,34 +1,13 @@
-import dotenv from "dotenv";
 import {Stats} from "fs";
 import fs from "fs/promises";
-import cron from "node-cron";
-import express, {Express} from "express";
-import bodyParser from "body-parser";
-import cors from 'cors';
 import fetch, {ResponseInit} from "node-fetch";
 import puppeteer from "puppeteer-extra";
-import StealthPlugin from "puppeteer-extra-plugin-stealth"
 import {fileURLToPath} from "url";
 import path from "path";
-import nodemailer, {SentMessageInfo} from "nodemailer";
 
 // file pathing
 const __filename: string = fileURLToPath(import.meta.url);
 const __dirname: string = path.dirname(__filename);
-
-// .env setup
-dotenv.config({path: path.join(__dirname, "..", ".env")});
-
-// stealth plugin setup
-puppeteer.use(StealthPlugin());
-
-// express setup
-const app: Express = express()
-app.use(cors())
-
-// body parser setup
-app.use(bodyParser.urlencoded({extended: false})) // parse application/x-www-form-urlencoded
-app.use(bodyParser.json()) // parse application/json
 
 // create folder if it doesn't exist
 await fs.mkdir(path.join(__dirname, '..', 'storage/clones'), {recursive: true});
@@ -44,7 +23,7 @@ const browser = await puppeteer.launch({
 });
 
 
-async function websiteValidity(link: string): Promise<number | undefined> {
+export async function websiteValidity(link: string): Promise<number | undefined> {
     try {
         // HEAD request to check website validity
         const response: ResponseInit = await fetch(link, {
@@ -57,7 +36,7 @@ async function websiteValidity(link: string): Promise<number | undefined> {
     }
 }
 
-async function profanityData(link: string, fileName: string) {
+export async function profanityData(link: string, fileName: string) {
     const page = await browser.newPage();
     await page.goto(link);
 
@@ -99,7 +78,7 @@ async function profanityData(link: string, fileName: string) {
     return profanityData;
 }
 
-async function fileCleanup(): Promise<void> {
+export async function fileCleanup(): Promise<void> {
     const files: string[] = await fs.readdir(path.join(__dirname, '..', 'storage/clones'));
 
     for (let file of files) {
@@ -110,79 +89,3 @@ async function fileCleanup(): Promise<void> {
         }
     }
 }
-
-
-app.post('/api/link-validity', async (req, res) => {
-    const {link} = req.body;
-
-    const status = await websiteValidity(link);
-
-    return res.send({
-        status
-    })
-})
-
-app.post('/api/website-link', async (req, res) => {
-    const {link, fileName} = req.body;
-
-    const profanityReport = await profanityData(link, fileName);
-
-    return res.send(profanityReport);
-})
-
-app.post('/api/profanity-download', async (req, res) => {
-    const {uuid} = req.body;
-
-    let fileName: string
-
-    if (req.body.html) {
-        fileName = `${uuid}.mhtml`
-    } else if (req.body.img) {
-        fileName = `${uuid}.png`
-    }
-
-    return res.download(path.join(__dirname, '..', `storage/clones/${fileName!}`));
-})
-
-app.post('/api/contact-us', async (req, res) => {
-    const {firstName, lastName, email, subject, message} = req.body
-
-   console.log(firstName, lastName, email, subject, message)
-
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-        }
-    });
-
-    const mailOptions = {
-        from: email,
-        to: process.env.EMAIL_USER,
-        subject: subject,
-        text: message
-    };
-
-    transporter.sendMail(mailOptions, (error: Error | null, info: SentMessageInfo) => {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
-        }
-    });
-
-    return res.sendStatus(200);
-});
-
-app.listen(process.env.PORT || 3500, () => {
-    console.log(`Listening on port ${process.env.PORT || 3500}`)
-})
-
-
-cron.schedule('*/1 * * * *', async () => {
-    await fileCleanup();
-});
-
-// safesurf.help@gmail.com
-// KLJkjdfhaks789732984u932
