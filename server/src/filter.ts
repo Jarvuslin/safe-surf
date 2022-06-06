@@ -1,9 +1,11 @@
 import {Stats} from "fs";
 import fs from "fs/promises";
-import fetch, {ResponseInit} from "node-fetch";
-import puppeteer from "puppeteer-extra";
-import {fileURLToPath} from "url";
 import path from "path";
+import {fileURLToPath} from "url";
+import puppeteer from "puppeteer-extra";
+import StealthPlugin from "puppeteer-extra-plugin-stealth"
+import fetch, {ResponseInit} from "node-fetch";
+
 
 // file pathing
 const __filename: string = fileURLToPath(import.meta.url);
@@ -17,13 +19,16 @@ const badWords: string[] = (await fs.readFile(path.join(__dirname, '..', 'storag
     .replace(/\r\n/g, '\n')
     .split('\n');
 
+// stealth plugin setup
+puppeteer.use(StealthPlugin());
+
 // open puppeteer browser to be used later
 const browser = await puppeteer.launch({
     headless: true
 });
 
 
-export async function websiteValidity(link: string): Promise<number | undefined> {
+export const websiteValidity = async (link: string): Promise<number | undefined> => {
     try {
         // HEAD request to check website validity
         const response: ResponseInit = await fetch(link, {
@@ -36,7 +41,7 @@ export async function websiteValidity(link: string): Promise<number | undefined>
     }
 }
 
-export async function profanityData(link: string, fileName: string) {
+export const profanityData = async (link: string, fileName: string): Promise<{ [key: string]: number }> => {
     const page = await browser.newPage();
     await page.goto(link);
 
@@ -78,7 +83,7 @@ export async function profanityData(link: string, fileName: string) {
     return profanityData;
 }
 
-export async function fileCleanup(): Promise<void> {
+export const fileCleanup = async (): Promise<void> => {
     const files: string[] = await fs.readdir(path.join(__dirname, '..', 'storage/clones'));
 
     for (let file of files) {
