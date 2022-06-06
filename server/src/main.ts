@@ -4,8 +4,6 @@ import cron from "node-cron";
 import express, {Express} from "express";
 import bodyParser from "body-parser";
 import cors from 'cors';
-import puppeteer from "puppeteer-extra";
-import StealthPlugin from "puppeteer-extra-plugin-stealth"
 import {fileURLToPath} from "url";
 import path from "path";
 import nodemailer, {SentMessageInfo} from "nodemailer";
@@ -17,8 +15,7 @@ const __dirname: string = path.dirname(__filename);
 // .env setup
 dotenv.config({path: path.join(__dirname, "..", ".env")});
 
-// stealth plugin setup
-puppeteer.use(StealthPlugin());
+
 
 // express setup
 const main: Express = express()
