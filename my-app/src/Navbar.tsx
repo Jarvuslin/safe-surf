@@ -13,7 +13,7 @@ import PolicyIcon from '@mui/icons-material/Policy';
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 
-const pages: string[] = ['SEARCH', 'ABOUT US', 'CONTACT US'];
+const pages: string[] = ['FILTER', 'ABOUT US', 'CONTACT US'];
 
 const useStyles = {
     menu: {
@@ -80,7 +80,7 @@ const Navbar = ({darkMode, setDarkMode}: {darkMode: boolean, setDarkMode: Dispat
                             }}
                         >
                             {pages.map((page) => (
-                                <Link style={{...useStyles.menu, textAlign: 'center'}} to={`/${page.toLowerCase().replace(/\s/g, '-')}`}>
+                                <Link key={page} style={{...useStyles.menu, textAlign: 'center'}} to={`/${page.toLowerCase().replace(/\s/g, '-')}`}>
                                     {page}
                                 </Link>
                             ))}
@@ -112,9 +112,8 @@ const Navbar = ({darkMode, setDarkMode}: {darkMode: boolean, setDarkMode: Dispat
                     </Link>
                     <Box sx={{marginLeft: 'auto', display: {xs: 'none', md: 'flex'}}}>
                         {pages.map((page) => (
-                            <Link style={{textDecoration: 'none'}} to={`/${page.toLowerCase().replace(/\s/g, '-')}`}>
+                            <Link key={page} style={{textDecoration: 'none'}} to={`/${page.toLowerCase().replace(/\s/g, '-')}`}>
                                 <Button
-                                    key={page}
                                     onClick={handleCloseNavMenu}
                                     sx={{my: 2, color: 'white', display: 'block'}}
                                 >

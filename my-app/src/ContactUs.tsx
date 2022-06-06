@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import EmailValidator from 'email-validator';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
@@ -10,12 +11,14 @@ const ContactUs = (): JSX.Element => {
         firstName: '',
         lastName: '',
         email: '',
+        subject: '',
         message: ''
     });
     const [fieldErrors, setFieldErrors] = useState<{ [key: string]: boolean }>({
         firstName: false,
         lastName: false,
         email: false,
+        subject: false,
         message: false
     });
     const [sending, setSending] = useState(false);
@@ -45,28 +48,41 @@ const ContactUs = (): JSX.Element => {
         setSending(true);
         setError(false);
 
-        if (!fieldValues.firstName) {
-            setFieldErrors({
-                firstName: true
-            });
-        }
-        if (!fieldValues.lastName) {
-            setFieldErrors({
-                lastName: true
-            });
-        }
-        if (!fieldValues.email) {
-            setFieldErrors({
-                email: true
-            });
-        }
-        if (!fieldValues.message) {
-            setFieldErrors({
-                message: true
-            });
+        let error: boolean = false;
+        let errors: {[key: string]: boolean} = {
+            firstName: false,
+            lastName: false,
+            email: false,
+            subject: false,
+            message: false
         }
 
-        setError(true);
+        if (fieldValues.firstName.length === 0) {
+            error = true;
+            errors.firstName = true;
+        }
+        if (fieldValues.lastName.length === 0) {
+            error = true;
+            errors.lastName = true;
+        }
+        if (fieldValues.email.length === 0 || !EmailValidator.validate(fieldValues.email)) {
+            error = true;
+            errors.email = true;
+        }
+        if (fieldValues.subject.length === 0) {
+            error = true;
+            errors.subject = true;
+        }
+        if (fieldValues.message.length === 0) {
+            error = true;
+            errors.message = true;
+        }
+
+        if (error) {
+            setSending(false);
+            setFieldErrors(errors);
+            return;
+        }
 
         if (fieldValues.firstName && fieldValues.lastName && fieldValues.email && fieldValues.message) {
             await fetch('http://localhost:3500/api/contact-us', {
@@ -74,12 +90,7 @@ const ContactUs = (): JSX.Element => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    firstName: fieldValues.firstName,
-                    lastName: fieldValues.lastName,
-                    email: fieldValues.email,
-                    message: fieldValues.message
-                })
+                body: JSON.stringify(fieldValues)
             });
 
             setError(false);
@@ -129,13 +140,23 @@ const ContactUs = (): JSX.Element => {
                     error={fieldErrors.email}
                 />
                 <TextField
+                    onChange={(e) => setFieldValues({...fieldValues, subject: e.target.value})}
+                    sx={useStyles.field}
+                    id="filled-basic"
+                    label="SUBJECT"
+                    variant="filled"
+                    fullWidth
+                    required
+                    error={fieldErrors.subject}
+                />
+                <TextField
                     onChange={(e) => setFieldValues({...fieldValues, message: e.target.value})}
                     sx={useStyles.field}
                     id="filled-basic"
                     label="MESSAGE"
                     variant="filled"
                     multiline
-                    rows={8}
+                    rows={7}
                     fullWidth
                     required
                     error={fieldErrors.message}

@@ -31,7 +31,7 @@ const App = (): JSX.Element => {
                 <Navbar darkMode={darkMode} setDarkMode={setDarkMode}/>
                 <Routes>
                     <Route path="/" element={<Home/>}/>
-                    <Route path="/search" element={<Profanity/>}/>
+                    <Route path="/filter" element={<Profanity/>}/>
                     <Route path="/about-us" element={<AboutUs/>}/>
                     <Route path="/contact-us" element={<ContactUs/>}/>
                 </Routes>

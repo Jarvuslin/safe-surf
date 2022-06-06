@@ -145,9 +145,9 @@ app.post('/api/profanity-download', async (req, res) => {
 })
 
 app.post('/api/contact-us', async (req, res) => {
-    const {firstName, lastName, email, message} = req.body
+    const {firstName, lastName, email, subject, message} = req.body
 
-    console.log(`${firstName} ${lastName} || ${email} || ${message}`)
+   console.log(firstName, lastName, email, subject, message)
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -158,9 +158,9 @@ app.post('/api/contact-us', async (req, res) => {
     });
 
     const mailOptions = {
-        from: 'safesurf.support@gmail.com',
-        to: 'safesurf@gmail.com',
-        subject: 'New Inquiry',
+        from: email,
+        to: process.env.EMAIL_USER,
+        subject: subject,
         text: message
     };
 
@@ -183,3 +183,6 @@ app.listen(process.env.PORT || 3500, () => {
 cron.schedule('*/1 * * * *', async () => {
     await fileCleanup();
 });
+
+// safesurf.help@gmail.com
+// KLJkjdfhaks789732984u932
