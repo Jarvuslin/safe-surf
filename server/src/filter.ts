@@ -2,14 +2,19 @@ import {Stats} from "fs";
 import fs from "fs/promises";
 import path from "path";
 import {fileURLToPath} from "url";
+import dotenv from "dotenv";
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth"
 import fetch, {ResponseInit} from "node-fetch";
-
+import nodemailer, {SentMessageInfo} from "nodemailer";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 
 // file pathing
 const __filename: string = fileURLToPath(import.meta.url);
 const __dirname: string = path.dirname(__filename);
+
+// .env setup
+dotenv.config({path: path.join(__dirname, "..", ".env")});
 
 // create folder if it doesn't exist
 await fs.mkdir(path.join(__dirname, '..', 'storage/clones'), {recursive: true});
@@ -81,6 +86,35 @@ export const profanityData = async (link: string, fileName: string): Promise<{ [
     await page.close();
 
     return profanityData;
+}
+
+export const contactUs = async (data: { [key: string]: string }) => {
+    const {firstName, lastName, email, subject, message} = data;
+
+    console.log(firstName, lastName, email, subject, message)
+
+    const transporter: nodemailer.Transporter<SMTPTransport.SentMessageInfo> = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+        }
+    });
+
+    const mailOptions: {[key: string]: string} = {
+        from: email,
+        to: process.env.EMAIL_USER!,
+        subject: subject,
+        text: message
+    };
+
+    transporter.sendMail(mailOptions, (error: Error | null, info: SentMessageInfo) => {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
 }
 
 export const fileCleanup = async (): Promise<void> => {
