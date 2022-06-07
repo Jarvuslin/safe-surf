@@ -85,7 +85,7 @@ const ContactUs = (): JSX.Element => {
         }
 
         if (fieldValues.firstName && fieldValues.lastName && fieldValues.email && fieldValues.message) {
-            await fetch('http://192.168.10.101:3500/api/contact-us', {
+            await fetch('http://localhost:3500/api/contact-us', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

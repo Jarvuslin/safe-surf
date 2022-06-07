@@ -64,6 +64,6 @@ main.post('/api/contact-us', async (req, res) => {
 
 
 /* manually set and listen on port 3500 */
-main.listen(3500, '0.0.0.0', () => {
+main.listen(process.env.PORT || 3500, () => {
     console.log(`Listening on port ${process.env.PORT || 3500}`)
 })
