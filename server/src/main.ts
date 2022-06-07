@@ -62,11 +62,6 @@ main.post('/api/contact-us', async (req, res) => {
     return res.sendStatus(200);
 });
 
-main.get('/test', async (req, res) => {
-    res.send('<h1>test</h1>')
-    return res.sendStatus(200);
-});
-
 /* manually set and listen on port 3500 */
 main.listen(process.env.PORT || 3500, () => {
     console.log(`Listening on port ${process.env.PORT || 3500}`)
