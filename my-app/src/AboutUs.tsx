@@ -13,7 +13,7 @@ const AboutUs = (): JSX.Element => {
     };
 
     return (
-        <Container>
+        <Container sx={{verticalAlign: "center"}}>
             <Typography variant='h6' align='center' gutterBottom>
                 SafeSurf is a webapp that aims to give users access to our proprietary and autonomous profanity identification tool. Users will be able to input webpage links and in return receive profanity reports. The processing will take place on our server, where we identify and evaluate profanity levels across web pages. Once ready, users will be given ample amounts of information - including a percentage based analysis of a site's profanity levels and if requested, a preview of the page (HTML / PNG).
             </Typography>

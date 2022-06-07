@@ -34,7 +34,7 @@ const browser: Browser = await puppeteer.launch({
     headless: true
 });
 
-
+/* check validity of website by sending HEAD request */
 export const websiteValidity = async (link: string): Promise<number | undefined> => {
     try {
         // HEAD request to check website validity
@@ -48,6 +48,7 @@ export const websiteValidity = async (link: string): Promise<number | undefined>
     }
 }
 
+/* retrieves profanity data for report */
 export const profanityData = async (link: string, fileName: string): Promise<{ [key: string]: number }> => {
     const page: Page = await browser.newPage();
     await page.goto(link);
@@ -90,6 +91,7 @@ export const profanityData = async (link: string, fileName: string): Promise<{ [
     return profanityData;
 }
 
+/* set up email variables for contact page */
 export const contactUs = async (data: { [key: string]: string }) => {
     const {firstName, lastName, email, subject, message} = data;
 
@@ -119,6 +121,7 @@ export const contactUs = async (data: { [key: string]: string }) => {
     });
 }
 
+/* clean up storage/clones every 15 minutes */
 export const fileCleanup = async (): Promise<void> => {
     const files: string[] = await fs.readdir(path.join(__dirname, '..', 'storage/clones'));
 
