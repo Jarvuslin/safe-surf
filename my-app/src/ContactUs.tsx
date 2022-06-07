@@ -49,7 +49,7 @@ const ContactUs = (): JSX.Element => {
         setError(false);
 
         let error: boolean = false;
-        let errors: {[key: string]: boolean} = {
+        let errors: { [key: string]: boolean } = {
             firstName: false,
             lastName: false,
             email: false,

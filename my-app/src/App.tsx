@@ -12,6 +12,7 @@ import {ThemeProvider, createTheme, Theme} from '@mui/material/styles';
 const App = (): JSX.Element => {
     const [darkMode, setDarkMode] = React.useState<boolean>(true);
 
+    // theme setup
     const darkTheme: Theme = createTheme({
         palette: {
             mode: darkMode ? 'dark' : 'light',
@@ -40,5 +41,6 @@ const App = (): JSX.Element => {
         </ThemeProvider>
     );
 }
+
 
 export default App;

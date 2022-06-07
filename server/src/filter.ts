@@ -125,7 +125,7 @@ export const fileCleanup = async (): Promise<void> => {
     for (let file of files) {
         const stats: Stats = await fs.stat(path.join(__dirname, '..', 'storage/clones', file));
 
-        if (stats.isFile() && (Date.now() - stats.mtimeMs) > 10000) {
+        if (stats.isFile() && (Date.now() - stats.mtimeMs) > (15 * 60 * 1000)) {
             await fs.unlink(path.join(__dirname, '..', 'storage/clones', file));
         }
     }

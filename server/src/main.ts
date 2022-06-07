@@ -18,7 +18,7 @@ main.use(cors())
 main.use(bodyParser.urlencoded({extended: false})) // parse application/x-www-form-urlencoded
 main.use(bodyParser.json()) // parse application/json
 
-
+/* retrieves users link and verifies if website exists. */
 main.post('/api/link-validity', async (req, res) => {
     const {link}: { link: string } = req.body;
 
@@ -29,7 +29,7 @@ main.post('/api/link-validity', async (req, res) => {
     })
 })
 
-
+/* retrieves users link and generates profanity report of website */
 main.post('/api/website-link', async (req, res) => {
     const {link, fileName}: { link: string, fileName: string } = req.body;
 

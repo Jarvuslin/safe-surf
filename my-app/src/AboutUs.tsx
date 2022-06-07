@@ -3,7 +3,9 @@ import Typography from "@mui/material/Typography";
 import React from "react";
 import {Link} from "react-router-dom";
 
+
 const AboutUs = (): JSX.Element => {
+    // styling properties
     const useStyles = {
         title: {
             marginTop: '1rem',
@@ -24,5 +26,6 @@ const AboutUs = (): JSX.Element => {
         </Container>
     );
 }
+
 
 export default AboutUs;

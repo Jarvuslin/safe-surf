@@ -1,5 +1,9 @@
 import React from 'react'
 import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid';
 
 const Home = (): JSX.Element => {
     const useStyles = {
@@ -9,17 +13,20 @@ const Home = (): JSX.Element => {
     };
 
     return (
-        <div className="home">
-            <Typography
-                sx={useStyles.title}
-                variant='h6'
-                color='textPrimary'
-                align='center'
-                gutterBottom
-            >
-                HOME
-            </Typography>
-        </div>
+        <Container>
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                    <Typography variant='h2'>
+                        EXPERIENCE THE WORLD THROUGH A CLEAN LENS
+                    </Typography>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <Typography>
+                        FILL RANDOM TEXT HERE LATER JKDFJALKSDJFKLDSAJFKLADSJFKLSDAJF DSALKFJDSALKJ FDSALKJFADS
+                    </Typography>
+                </Grid>
+            </Grid>
+        </Container>
     );
 }
 
