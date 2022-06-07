@@ -21,7 +21,7 @@ dotenv.config({path: path.join(__dirname, "..", ".env")});
 // create folder if it doesn't exist
 await fs.mkdir(path.join(__dirname, '..', 'storage/clones'), {recursive: true});
 
-// Allocating dictionary to memory
+// allocating dictionary to memory
 const badWords: string[] = (await fs.readFile(path.join(__dirname, '..', 'storage/dictionary/bad-words'), 'utf-8'))
     .replace(/\r\n/g, '\n')
     .split('\n');

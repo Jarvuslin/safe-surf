@@ -39,6 +39,7 @@ main.post('/api/website-link', async (req, res) => {
 })
 
 
+/* sends user file to be downloaded */
 main.post('/api/profanity-download', async (req, res) => {
     const {uuid}: { uuid: string } = req.body;
 
@@ -54,6 +55,7 @@ main.post('/api/profanity-download', async (req, res) => {
 })
 
 
+/* gets user information */
 main.post('/api/contact-us', async (req, res) => {
     await contactUs(req.body);
 
@@ -61,10 +63,7 @@ main.post('/api/contact-us', async (req, res) => {
 });
 
 
+/* manually set and listen on port 3500 */
 main.listen(process.env.PORT || 3500, () => {
     console.log(`Listening on port ${process.env.PORT || 3500}`)
 })
-
-
-// safesurf.help@gmail.com
-// KLJkjdfhaks789732984u932

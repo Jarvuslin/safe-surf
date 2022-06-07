@@ -8,6 +8,7 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
 import {ThemeProvider, createTheme, Theme} from '@mui/material/styles';
 
+
 const App = (): JSX.Element => {
     const [darkMode, setDarkMode] = React.useState<boolean>(true);
 
