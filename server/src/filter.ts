@@ -3,12 +3,13 @@ import fs from "fs/promises";
 import path from "path";
 import {fileURLToPath} from "url";
 import dotenv from "dotenv";
+import { Page, Browser, CDPSession } from "puppeteer";
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth"
 import fetch, {ResponseInit} from "node-fetch";
 import nodemailer, {SentMessageInfo} from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
-import { Page } from "puppeteer";
+
 
 // file pathing
 const __filename: string = fileURLToPath(import.meta.url);
@@ -29,7 +30,7 @@ const badWords: string[] = (await fs.readFile(path.join(__dirname, '..', 'storag
 puppeteer.use(StealthPlugin());
 
 // open puppeteer browser to be used later
-const browser = await puppeteer.launch({
+const browser: Browser = await puppeteer.launch({
     headless: true
 });
 
@@ -77,7 +78,7 @@ export const profanityData = async (link: string, fileName: string): Promise<{ [
 
     await page.evaluate((newHtml) => document.body.innerHTML = newHtml, newHtml)
 
-    const cdp = await page.target().createCDPSession();
+    const cdp: CDPSession = await page.target().createCDPSession();
     let {data} = await cdp.send('Page.captureSnapshot');
 
     await page.screenshot({path: `server/storage/clones/${fileName}.png`, fullPage: true});
