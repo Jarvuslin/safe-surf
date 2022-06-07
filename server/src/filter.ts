@@ -8,6 +8,7 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth"
 import fetch, {ResponseInit} from "node-fetch";
 import nodemailer, {SentMessageInfo} from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
+import { Page } from "puppeteer";
 
 // file pathing
 const __filename: string = fileURLToPath(import.meta.url);
@@ -47,7 +48,7 @@ export const websiteValidity = async (link: string): Promise<number | undefined>
 }
 
 export const profanityData = async (link: string, fileName: string): Promise<{ [key: string]: number }> => {
-    const page = await browser.newPage();
+    const page: Page = await browser.newPage();
     await page.goto(link);
 
     const profanityData = await page.evaluate((badWords) => {
