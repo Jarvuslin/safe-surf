@@ -53,7 +53,7 @@ export const profanityData = async (link: string, fileName: string): Promise<{ [
     const page: Page = await browser.newPage();
     await page.goto(link);
 
-    const profanityData = await page.evaluate((badWords) => {
+    const profanityData: {[key: string]: number} = await page.evaluate((badWords) => {
         const content: string[] = document.body.innerText.replace(/[^\w\s]/gi, '').split(/\s+|\n+/);
 
         const wordCount: number = content.length;
