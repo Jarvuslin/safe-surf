@@ -26,7 +26,7 @@ Begin in the root directory, enter the following commands in order.
      npm install
      npm start
 ## Note
-If you would like to change your PORT you must manually update the api endpoints within Profanity.ts and ContactUs.ts
+If you would like to change your PORT you must manually update the api endpoints within Profanity.ts and ContactUs.ts.
 
 If you would like to setup the ContactUs page functionality under your email you must create a .env file within the server directory, and fill out the following with your info.
 
