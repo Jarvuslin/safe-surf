@@ -85,7 +85,7 @@ const ContactUs = (): JSX.Element => {
         }
 
         if (fieldValues.firstName && fieldValues.lastName && fieldValues.email && fieldValues.message) {
-            await fetch('http://localhost:3500/api/contact-us', {
+            await fetch('https://935e-99-246-201-45.ngrok.io/api/contact-us', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
