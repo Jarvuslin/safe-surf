@@ -82,7 +82,7 @@ export const profanityData = async (link: string, fileName: string): Promise<{ [
     const cdp: CDPSession = await page.target().createCDPSession();
     let {data} = await cdp.send('Page.captureSnapshot');
 
-    await page.screenshot({path: `server/storage/clones/${fileName}.png`, fullPage: true});
+    await page.screenshot({path: path.join(__dirname, '..', `storage/clones/${fileName}.png`), fullPage: true});
 
     await fs.writeFile(path.join(__dirname, '..', 'storage/clones', fileName + '.mhtml'), data, "utf-8");
 
