@@ -41,7 +41,7 @@ const Profanity = (): JSX.Element => {
         e.preventDefault();
 
         try {
-            const response: Response = await fetch('https://fcae-99-246-201-45.ngrok.io/api/profanity-download', {
+            const response: Response = await fetch('https://2c94-99-246-201-45.ngrok.io/api/profanity-download', {
                 method: 'POST',
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
@@ -93,7 +93,7 @@ const Profanity = (): JSX.Element => {
         }
 
         try {
-            const response: Response = await fetch('https://fcae-99-246-201-45.ngrok.io/api/link-validity', {
+            const response: Response = await fetch('https://2c94-99-246-201-45.ngrok.io/api/link-validity', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
@@ -123,7 +123,7 @@ const Profanity = (): JSX.Element => {
         setUuid(fileName);
 
         try {
-            const response: Response = await fetch('https://fcae-99-246-201-45.ngrok.io/api/website-link', {
+            const response: Response = await fetch('https://2c94-99-246-201-45.ngrok.io/api/website-link', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
